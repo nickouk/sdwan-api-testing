@@ -6,7 +6,6 @@ from pwinput import pwinput
 # Cisco SDK for Catlayst SDWAN
 from catalystwan.session import create_manager_session
 from catalystwan.utils.alarm_status import Severity
-from catalystwan.api.dashboard_api import CertificatesStatus
 
 # Standard libraries
 from pprint import pprint
@@ -30,19 +29,13 @@ critical_alarms = session.api.alarms.get(from_time=hours).filter(severity=Severi
 for alarm in critical_alarms:
     print(alarm)
 
-# Print devices with condition not normal
-
-devices = session.api.devices.get()
-
-for device in devices:
-    if device.status != "normal":
-        print(device)
-
-print("\nAll devices checked.\n")
-
 # Check certificates
 
 certificates = session.api.dashboard.get_certificates_status()
+print(f"\n{certificates.data[0]}")
 
-for item in certificates:
-    print(item)
+# Check Device Health
+
+devicehealth = session.api.dashboard.get_devices_health_overview()
+print(f"\n{devicehealth.data[0]}")
+
