@@ -6,6 +6,8 @@ from pwinput import pwinput
 # Cisco SDK for Catlayst SDWAN
 from catalystwan.session import create_manager_session
 from catalystwan.utils.alarm_status import Severity
+from catalystwan.utils.personality import Personality
+
 
 # Standard libraries
 from pprint import pprint
@@ -20,22 +22,53 @@ base_url = "https://vmanage-171203704.sdwan.cisco.com/"
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Create SDWAN Manager session
-session = create_manager_session(url=base_url, username=username, password=password)
+try:
+    session = create_manager_session(url=base_url, username=username, password=password)
+except ManagerHTTPError as error:
+    # Error processing
+    print(error.response.status_code)
+    print(error.info.code)
+    print(error.info.message)
+    print(error.info.details)
 
 # Get Critial alarms that have occurred in the last 5 hours
 hours = 5
-critical_alarms = session.api.alarms.get(from_time=hours).filter(severity=Severity.CRITICAL)
+try:
+    critical_alarms = session.api.alarms.get(from_time=hours).filter(severity=Severity.CRITICAL)
+except ManagerHTTPError as error:
+    # Error processing
+    print(error.response.status_code)
+    print(error.info.code)
+    print(error.info.message)
+    print(error.info.details)
 
 for alarm in critical_alarms:
     print(alarm)
 
 # Check certificates
 
-certificates = session.api.dashboard.get_certificates_status()
+try:
+    certificates = session.api.dashboard.get_certificates_status()
+except ManagerHTTPError as error:
+    # Error processing
+    print(error.response.status_code)
+    print(error.info.code)
+    print(error.info.message)
+    print(error.info.details)
+
 print(f"\n{certificates.data[0]}")
 
 # Check Device Health
 
-devicehealth = session.api.dashboard.get_devices_health_overview()
-print(f"\n{devicehealth.data[0]}")
+try:
+    devicehealthoverview = session.api.dashboard.get_devices_health_overview()
+except ManagerHTTPError as error:
+    # Error processing
+    print(error.response.status_code)
+    print(error.info.code)
+    print(error.info.message)
+    print(error.info.details)
+
+print(f"\n{devicehealthoverview.data[0]}")
+
 
