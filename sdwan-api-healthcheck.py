@@ -10,6 +10,14 @@ from catalystwan.session import create_manager_session
 from catalystwan.utils.alarm_status import Severity
 from catalystwan.utils.personality import Personality
 from catalystwan.utils.dashboard import HealthColor
+from catalystwan.exceptions import (
+    DefaultPasswordError,
+    ManagerHTTPError,
+    ManagerReadyTimeout,
+    ManagerRequestException,
+    SessionNotCreatedError,
+    TenantSubdomainNotFound,
+)
 
 
 # Standard libraries
@@ -54,7 +62,14 @@ for alarm in critical_alarms:
 
 print(f"Retrieving list of devices...\n")
 
-devices = session.api.devices.get()
+try:
+    devices = session.api.devices.get()
+except ManagerHTTPError as error:
+    # Error processing
+    print(error.response.status_code)
+    print(error.info.code)
+    print(error.info.message)
+    print(error.info.details)
 
 print("\nController status:\n")
 
@@ -112,7 +127,15 @@ print(f"\n{devicehealthoverview.data[0]}")
 
 # Report on device in "Yellow" health state
 
-devhealth=session.api.dashboard.get_devices_health()
+try:
+    devhealth=session.api.dashboard.get_devices_health()
+except ManagerHTTPError as error:
+    # Error processing
+    print(error.response.status_code)
+    print(error.info.code)
+    print(error.info.message)
+    print(error.info.details)
+    
 yellow_devs = devhealth.devices.filter(health=HealthColor.YELLOW)
 
 print("\nDevices in yellow state:")
