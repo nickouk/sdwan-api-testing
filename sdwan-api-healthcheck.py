@@ -45,7 +45,11 @@ except ManagerHTTPError as error:
     print(error.info.details)
 
 # Get Critial alarms that have occurred in the last 6 hours
+
+print("Critical alarms from the last 6 hours:")
+
 hours = 6
+alarms = 0
 try:
     critical_alarms = session.api.alarms.get(from_time=hours).filter(severity=Severity.CRITICAL)
 except ManagerHTTPError as error:
@@ -56,7 +60,10 @@ except ManagerHTTPError as error:
     print(error.info.details)
 
 for alarm in critical_alarms:
+    alarms = alarms + 1
     print(alarm)
+
+print(f"\n{alarms} alarms reported on\n")
 
 # Get devices
 
@@ -135,10 +142,10 @@ except ManagerHTTPError as error:
     print(error.info.code)
     print(error.info.message)
     print(error.info.details)
-    
+
 yellow_devs = devhealth.devices.filter(health=HealthColor.YELLOW)
 
-print("\nDevices in yellow state:")
+print("\nDevices in 'fair/yellow' state:")
 
 for device in yellow_devs:
     print(f"\n{device.system_ip:<20}{device.name}")
@@ -171,4 +178,9 @@ for router in routers:
     if not router.is_reachable:
         print(f"{router.local_system_ip:<20}{router.hostname}")
 
-n2r2 = devices.find()
+
+# Close the session
+
+print("\nClosing the session")
+
+session.close()
