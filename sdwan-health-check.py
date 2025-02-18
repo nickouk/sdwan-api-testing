@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-# This script performs a speedtest
+# This script performs a basic healthcheck on the target vManage
+# the output is recorded in a file named 'sdwan-status-date-time.txt
 
 # This library hides sensitive input and replaces it with another character; default *
 from pwinput import pwinput
